@@ -5,11 +5,11 @@
 */
 
 export async function main(ns) {
-    var allServers = []; // Generate empty array to track server names
-    var servers = []; // generate empty array for temporary servers (the next batch to try to nuke)
     var nukedServers = []; // generate empty array for nuked server list so we skip rooted servers as we nuke them
-    servers.push(ns.getHostname()); // Add the current server (generally but not strictly "home" to the initial server list)
     while(true) { // start infinite loop to nuke servers
+        var allServers = []; // Generate empty array to track server names
+        var servers = []; // generate empty array for temporary servers (the next batch to try to nuke)
+        servers.push(ns.getHostname()); // Add the current server (generally but not strictly "home" to the initial server list)
         var rootingPrograms = 0; // resets port opener count to 0 - this vars us ensure we count any we've acquired since the last loop
         var myServers = ns.getPurchasedServers(); // add purchased servers to safe server list - this should hopefully allow for dynamic updates
         myServers.push("home"); // always add home to safe server list
@@ -31,9 +31,9 @@ export async function main(ns) {
         while (servers.length > 0) {
             var server = servers.pop(); // load next server in server array
             if (!nukedServers.includes(server)) { // check for if server already flagged as nuked
-                ns.tprint("--------------------------------" +
+                ns.print("--------------------------------" +
                     "-------------------------------");
-                ns.tprint("Working on " + server + "...");
+                ns.print("Working on " + server + "...");
     
                 // We will only nuke the server if the necessary conditions are met
                 var willNuke = 0;
@@ -62,14 +62,14 @@ export async function main(ns) {
                     reasons.push("we don't have enough programs");
                 }
                 if (willNuke > 0) {
-                    ns.tprint(
+                    ns.print(
                         server +
                         " can't or won't be nuked right now because " +
                         reasons.join(', and ') +
                         "."
                     );
                 } else {
-                    ns.tprint("Attempting to nuke " + server + "...");
+                    ns.print("Attempting to nuke " + server + "...");
                     if (ns.getServerNumPortsRequired(server) > 0) {
                         ns.brutessh(server);
                         if (
@@ -105,13 +105,14 @@ export async function main(ns) {
                     }
                     ns.nuke(server);
                     if (ns.hasRootAccess(server)) {
-                        ns.tprint(server + " successfully rooted!");
+                        ns.print(server + " successfully rooted!");
+                        ns.tprint("LOOPNUKE: " + server + " successfully rooted!");
                         nukedServers.push(server);
                     } else {
-                        ns.tprint(server + " NOT rooted!");
+                        ns.print(server + " NOT rooted!");
                     }
                 }
-                await ns.sleep(500);
+                await ns.sleep(10);
                 allServers.push(server);
                 var nextServers = ns.scan(server);
                 for (let i = 0; i < nextServers.length; i++) {
@@ -121,10 +122,11 @@ export async function main(ns) {
                 }
             }
         }
-        ns.tprint("================================" +
+        ns.print("================================" +
             "===============================");
-        ns.tprint("Rooted servers so far: " + nukedServers.length);
-        ns.tprint("Starting a new loop in 5 seconds...");
-        await ns.sleep(5000)
+        ns.print("Rooted servers so far: " + nukedServers.length);
+        ns.tprint("LOOPNUKE: Rooted servers so far: " + nukedServers.length);
+        ns.print("Starting a new loop in 100 milliseconds...");
+        await ns.sleep(100)
     }
 }
