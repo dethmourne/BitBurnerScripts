@@ -118,7 +118,6 @@ export async function main(ns) {
         ns.print("================================" +
             "===============================");
         ns.print("Rooted servers so far: " + nukedServers.length);
-        ns.tprint("LOOPNUKE: Rooted servers so far: " + nukedServers.length);
         ns.print("Starting a new loop in 100 milliseconds...");
         await ns.sleep(100)
     }
