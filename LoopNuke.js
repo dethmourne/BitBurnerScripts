@@ -106,14 +106,15 @@ export async function main(ns) {
                     ns.nuke(server);
                     if (ns.hasRootAccess(server)) {
                         ns.tprint(server + " successfully rooted!");
+                        nukedServers.push(server);
                     } else {
                         ns.tprint(server + " NOT rooted!");
                     }
                 }
-    
+                await ns.sleep(500);
                 allServers.push(server);
                 var nextServers = ns.scan(server);
-                for (i = 0; i < nextServers.length; ++i) {
+                for (let i = 0; i < nextServers.length; i++) {
                     if (!allServers.includes(nextServers[i])) {
                         servers.push(nextServers[i]);
                     }
@@ -123,6 +124,7 @@ export async function main(ns) {
         ns.tprint("================================" +
             "===============================");
         ns.tprint("Rooted servers so far: " + nukedServers.length);
-        ns.tprint("Starting a new loop...");
+        ns.tprint("Starting a new loop in 5 seconds...");
+        await ns.sleep(5000)
     }
 }
