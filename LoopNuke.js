@@ -48,13 +48,6 @@ export async function main(ns) {
                     reasons.push("we already have root access on it");
                 }
                 if (
-                    ns.getServerSecurityLevel(server) >
-                    ns.getHackingLevel()
-                ) {
-                    willNuke++;
-                    reasons.push("our hacking level is too low");
-                }
-                if (
                     ns.getServerNumPortsRequired(server) >
                     rootingPrograms
                 ) {
