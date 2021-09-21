@@ -5,13 +5,13 @@
 */
 
 export async function main(ns) {
-    let allServers = []; // Generate empty array to track server names
-    let servers = []; // generate empty array for temporary servers (the next batch to try to nuke)
-    let nukedServers = []; // generate empty array for nuked server list so we skip rooted servers as we nuke them
-    servers.push(ns.getHostname); // Add the current server (generally but not strictly "home" to the initial server list)
+    var allServers; // Generate empty array to track server names
+    var servers; // generate empty array for temporary servers (the next batch to try to nuke)
+    var nukedServers; // generate empty array for nuked server list so we skip rooted servers as we nuke them
+    servers.push(ns.getHostname()); // Add the current server (generally but not strictly "home" to the initial server list)
     while(true) { // start infinite loop to nuke servers
-        let rootingPrograms = 0; // resets port opener count to 0 - this lets us ensure we count any we've acquired since the last loop
-        let myServers = ns.getPurchasedServers(); // add purchased servers to safe server list - this should hopefully allow for dynamic updates
+        var rootingPrograms = 0; // resets port opener count to 0 - this vars us ensure we count any we've acquired since the last loop
+        var myServers = ns.getPurchasedServers(); // add purchased servers to safe server list - this should hopefully allow for dynamic updates
         myServers.push("home"); // always add home to safe server list
         if (ns.fileExists("BruteSSH.exe", "home")) { // this if chain adds to the port opener count
             rootingPrograms++;
@@ -29,16 +29,16 @@ export async function main(ns) {
             }
         }
         while (servers.length > 0) {
-            server = servers.pop(); // load next server in server array
+            var server = servers.pop(); // load next server in server array
             if (!nukedServers.includes(server)) { // check for if server already flagged as nuked
                 ns.tprint("--------------------------------" +
                     "-------------------------------");
                 ns.tprint("Working on " + server + "...");
     
                 // We will only nuke the server if the necessary conditions are met
-                let willNuke = 0;
-                let willHack = 0;
-                let reasons = [];
+                var willNuke = 0;
+                var willHack = 0;
+                var reasons = [];
                 if (myServers.includes(server)) {
                     willNuke++;
                     reasons.push("it is included in the 'myServers' list");
@@ -112,7 +112,7 @@ export async function main(ns) {
                 }
     
                 allServers.push(server);
-                nextServers = ns.scan(server);
+                var nextServers = ns.scan(server);
                 for (i = 0; i < nextServers.length; ++i) {
                     if (!allServers.includes(nextServers[i])) {
                         servers.push(nextServers[i]);
