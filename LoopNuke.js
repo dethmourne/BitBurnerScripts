@@ -5,9 +5,9 @@
 */
 
 export async function main(ns) {
-    var allServers; // Generate empty array to track server names
-    var servers; // generate empty array for temporary servers (the next batch to try to nuke)
-    var nukedServers; // generate empty array for nuked server list so we skip rooted servers as we nuke them
+    var allServers = []; // Generate empty array to track server names
+    var servers = []; // generate empty array for temporary servers (the next batch to try to nuke)
+    var nukedServers = []; // generate empty array for nuked server list so we skip rooted servers as we nuke them
     servers.push(ns.getHostname()); // Add the current server (generally but not strictly "home" to the initial server list)
     while(true) { // start infinite loop to nuke servers
         var rootingPrograms = 0; // resets port opener count to 0 - this vars us ensure we count any we've acquired since the last loop
