@@ -1,4 +1,5 @@
 // Simple script to buy TOR and all programs.
+// New version will quietly loop in the background until it has purchased all programs.
 
 const programList = [
 	"brutessh.exe",
@@ -13,16 +14,15 @@ const programList = [
 ]
 
 export async function main(ns) {
-	if (ns.purchaseTor()) {
-		ns.tprint("Purchased TOR")
-	} else {
-		ns.tprint("Did not purchase TOR")
-	};
-	for (let i = 0; i < programList.length; i++) {
-		if (ns.purchaseProgram(programList[i])) {
-			ns.tprint("Purchased " + programList[i])
-		} else {
-			ns.tprint("Did not purchase " + programList[i])
-		};
+	ns.purchaseTor();
+	var progCount = 0
+	while (progCount < programList.length) {
+		await ns.sleep(1000);
+		var progCount = 0;
+		for (let i = 0; i < programList.length; i++) {
+			if (ns.purchaseProgram(programList[i])) {
+				progCount++
+			}
+		}
 	}
 }
