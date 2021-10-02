@@ -1,23 +1,43 @@
-// Commit crimes automatically. Cancel a crime in progress to kill the script.
+// Commit crimes automatically. Cancel a crime in progress to break out of the loop.
+
+const crimeList = [
+	"shoplift",
+	"rob store",
+	"mug",
+	"larceny",
+	"deal drugs",
+	"bond forgery",
+	"traffick arms",
+	"homicide",
+	"grand theft auto",
+	"kidnap",
+	"assassinate",
+	"heist"
+]
 
 export async function main(ns) {
-	if (ns.args[0]) { // checks for existence of argument, defaults to shoplifting
-		var crime = ns.args[0]
-	} else {
-		var crime = "shoplift"
-	}
-	var crimeStats = ns.getCrimeStats(crime); // gets data on crime - notably, time to perform
-	var crimeTime = crimeStats.time * .8; // sets our time to check if we're still criminals at 80% of crime duration
-	var i = 0; // set a flag for breaking out of our loop
-
-	while (i < 1) { // do crimes unless we've broken out of the loop
-		while (ns.isBusy()) { // make sure we aren't busy when we attempt to do crimes
-			await ns.sleep(100)
+	while (true) {
+		var c = 0;
+		var value = 0;
+		for (let i = 0; i < crimeList.length; i++) {
+			var chance = ns.getCrimeChance(crimeList[i]);
+			var stats = ns.getCrimeStats(crimeList[i]);
+			var newvalue = ((chance * stats.money) / stats.time);
+			if (newvalue > value) {
+				var value = newvalue;
+				if (i > 0) {
+					c++
+				}
+			}
 		}
-		ns.commitCrime(crime);
-		await ns.sleep(crimeTime);
+		var stats = ns.getCrimeStats(crimeList[c]);
+		ns.commitCrime(crimeList[c]);
+		await ns.sleep(stats.time * .75);
 		if (!ns.isBusy()) {
-			i++
+			ns.scriptKill("commitCrimes.js", "home")
+		}
+		while (ns.isBusy()) {
+			await ns.sleep(50)
 		}
 	}
 }
